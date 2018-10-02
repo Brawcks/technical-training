@@ -13,6 +13,17 @@
         </field>
     </record>
 
+    <record id="view_task_search" model="ir.ui.view">
+        <field name="name">coopplanning.task.search</field>
+        <field name="model">coopplanning.task</field>
+        <field name="arch" type="xml">
+            <search>
+                <field name="name"/>
+                <field name="worker_id"/>
+            </search>
+        </field>
+    </record>
+
     <record model="ir.ui.view" id="task_view_form">
         <field name="name">Task Template Form</field>
         <field name="model">coopplanning.task</field>

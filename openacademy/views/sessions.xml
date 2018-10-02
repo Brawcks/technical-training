@@ -27,6 +27,7 @@
             <field name="arch" type="xml">
                 <form>
                     <sheet>
+                <field name="state" widget="statusbar" clickable="True" statusbar_visible="pending,confirmed" />
                         <group>
                             <group>
                                 <field name="name"/>

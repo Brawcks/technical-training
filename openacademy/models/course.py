@@ -59,7 +59,13 @@ class Session(models.Model):
     taken_seats = fields.Float(string="Taken seats", compute='_taken_seats')
     level = fields.Selection(related='course_id.level', readonly=True)
     responsible_id = fields.Many2one(related='course_id.responsible_id', readonly=True, store=True)
-
+    state = fields.Selection(
+        string='State',
+        selection=[
+            ('pending', 'Pending'),
+            ('confirmed', 'Confirmed'),
+        ],
+    )
     percentage_per_day = fields.Integer("%", default=100)
     attendees_count = fields.Integer(string="Attendees count", compute='_get_attendees_count', store=True)
 
@@ -68,6 +74,19 @@ class Session(models.Model):
             'title': title,
             'message': message,
         }}
+
+    @api.multi
+    def write(self, vals):
+        res = super(Session, self).write(vals) 
+        self.update_status()
+        return res
+
+    def update_status(self):
+        if self.env.context.get('no_update_status'):
+            return
+        self.filtered(lambda r: r.taken_seats>50).with_context(no_update_status=True).write({
+            'state': 'confirmed',
+        })
 
     @api.depends('seats', 'attendee_ids')
     def _taken_seats(self):
